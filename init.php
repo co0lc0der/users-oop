@@ -17,14 +17,10 @@ $GLOBALS['config'] = [
         'username'  =>  'root',
         'password'  =>  '',
         'database'  =>  'test',
-        'something' =>  [
-            'no'    =>  [
-                'foo'   =>  [
-                    'bar'   =>  'baz'
-                ]
-            ],
+    ],
 
-        ]
+    'sqlite' => [
+        'database'  =>  './users.sqlite3',
     ],
 
     'session'  =>  [

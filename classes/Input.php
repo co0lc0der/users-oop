@@ -18,9 +18,21 @@ class Input {
         if(isset($_POST[$item])) {
             return $_POST[$item];
         } else if(isset($_GET[$item])) {
-             return $_GET[$item];
+            return $_GET[$item];
         }
 
         return '';
+    }
+
+    public static function set($params = []) {
+
+        $attrs = '';
+        if ($params) {
+            foreach($params as $attr => $value) {
+                $attrs .= " {$attr}='{$value}'";
+            }
+        }
+
+        return "<input{$attrs}>";
     }
 }

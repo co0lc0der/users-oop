@@ -1,41 +1,10 @@
 <?php
+require_once 'init.php';
 
-
-move_uploaded_file(123123123, 'uploads/image.jpg');
-
-
-
-$user = new User;
-$user->login('rahim@marlindev.ru', '123123');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+echo Input::set(['type' => 'text', 'name' => 'login']);
 
 exit;
-require_once 'init.php';
+
 
 //echo Session::get(Config::get('session.user_session'));
 echo Session::flash('success');
