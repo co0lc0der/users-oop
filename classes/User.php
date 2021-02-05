@@ -43,13 +43,11 @@ class User {
 					if($remember) {
 						$hash = hash('sha256', uniqid());
 
-						$hashCheck = $this->db->get('user_sessions', ['user_id', '=', $this->data()->id]);
+						$hashCheck = $this->db->get('users', ['id', '=', $this->data()->id]);
 
-						if(!$hashCheck->count()) {
-							$this->db->insert('user_sessions', [
-								'user_id'   =>  $this->data()->id,
-								'hash'  =>  $hash
-							]);
+						if(!$hashCheck->first()->hash) {
+							//$this->db->update('users', $this->data()->id, ['hash' => $hash]);
+							$this->update(['hash' => $hash], $this->data()->id);
 						} else {
 							$hash = $hashCheck->first()->hash;
 						}
@@ -88,7 +86,7 @@ class User {
 	}
 
 	public function logout() {
-		$this->db->delete('user_sessions', ['user_id', '=', $this->data()->id]);
+		$this->update(['hash' => ''], $this->data()->id);
 		Session::delete($this->sessionName);
 		Cookie::delete($this->cookieName);
 	}
@@ -98,7 +96,6 @@ class User {
 	}
 
 	public function update($fields = [], $id = null) {
-
 		if(!$id && $this->isLoggedIn()) {
 			$id = $this->data()->id;
 		}

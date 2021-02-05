@@ -69,6 +69,14 @@ class Database {
 		return $this->action('SELECT *', $table, $where);
 	}
 
+	public function getFields($fields, $table, $where = []) {
+		if (is_array($fields)) {
+			return $this->action('SELECT `' . implode('`, `', $fields) . '`', $table, $where);
+		} else if (is_string($fields)) {
+			return $this->action("SELECT `{$fields}`", $table, $where);
+		}
+	}
+
 	public function delete($table, $where = []) {
 		return $this->action('DELETE', $table, $where);
 	}
@@ -84,7 +92,7 @@ class Database {
 
 			if(in_array($operator, $operators)) {
 
-				$sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
+				$sql = "{$action} FROM `{$table}` WHERE `{$field}` {$operator} ?";
 				if(!$this->query($sql, [$value])->error()) { //true если есть ошибка
 					return $this;
 				}
@@ -101,7 +109,7 @@ class Database {
 		}
 		$val = rtrim($values, ',');
 
-		$sql = "INSERT INTO {$table} (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ({$val})";
+		$sql = "INSERT INTO `{$table}` (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ({$val})";
 
 		if(!$this->query($sql, $fields)->error()) {
 			return true;
@@ -112,12 +120,11 @@ class Database {
 	public function update($table, $id, $fields = []) {
 		$set = '';
 		foreach($fields as $key => $field) {
-			$set .= "{$key} = ?,"; // username = ?, password = ?,
+			$set .= "`{$key}` = ?,"; // username = ?, password = ?,
 		}
-
 		$set = rtrim($set, ','); // username = ?, password = ?
 
-		$sql = "UPDATE {$table} SET {$set} WHERE id = {$id}";
+		$sql = "UPDATE `{$table}` SET {$set} WHERE `id` = {$id}";
 
 		if(!$this->query($sql, $fields)->error()){
 			return true;

@@ -10,7 +10,6 @@ class Input {
 			default:
 				return false;
 			break;  
-
 		}
 	}
 
@@ -24,8 +23,8 @@ class Input {
 		return '';
 	}
 
-	public static function set($params = []) {
-		$attrs = '';
+	public static function set($params = [], $type = 'text') {
+		$attrs = " {$type}";
 		if ($params) {
 			foreach($params as $attr => $value) {
 				$attrs .= " {$attr}='{$value}'";
