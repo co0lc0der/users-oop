@@ -2,21 +2,21 @@
 
 class Config {
 
-    public static function get($path = null) {
-        if($path) {
-            $config = $GLOBALS['config'];
+	public static function get($path = null) {
+		if($path) {
+			$config = $GLOBALS['config'];
 
-            $path = explode('.', $path); //'mysql something no foo bar'
+			$path = explode('.', $path);
 
-            foreach($path as $item) {
-                if(isset($config[$item])) {
-                    $config = $config[$item];
-                }
-            }
+			foreach($path as $item) {
+				if(isset($config[$item])) {
+					$config = $config[$item];
+				}
+			}
 
-            return $config;
-        }
+			return $config;
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

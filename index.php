@@ -1,23 +1,60 @@
 <?php
 require_once 'init.php';
 
-echo Input::set(['type' => 'text', 'name' => 'login']);
+include "header.php";
+?>
 
-exit;
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="jumbotron">
+					<h1 class="display-4">Привет, мир!</h1>
+					<p class="lead">Это дипломный проект по разработке на PHP. На этой странице список наших пользователей.</p>
+					<hr class="my-4">
+					<p>Чтобы стать частью нашего проекта вы можете пройти регистрацию.</p>
+					<a class="btn btn-primary btn-lg" href="register.php" role="button">Зарегистрироваться</a>
+				</div>
+			</div>
+		</div>
 
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Пользователи</h1>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Имя</th>
+							<th>Email</th>
+							<th>Дата</th>
+						</tr>
+					</thead>
 
-//echo Session::get(Config::get('session.user_session'));
-echo Session::flash('success');
-$user = new User;
-if($user->isLoggedIn()) {
-    echo "Hi, <a href='#'>{$user->data()->username}</a>";
-    echo "<p><a href='logout.php'>Logout</a></p>";
-    echo "<p><a href='update.php'>Update profile</a></p>";
-    echo "<p><a href='changepassword.php'>Change password</a></p>";
+					<tbody>
+						<tr>
+							<td>1</td>
+							<td><a href="#">Rahim</a></td>
+							<td>rahim@marlindev.ru</td>
+							<td>12/03/2025</td>
+						</tr>
 
-    if($user->hasPermissions('manager')) {
-        echo 'You are admin!';
-    }
-} else {
-    echo "<a href='login.php'>Login</a> or <a href='register.php'>Register</a>";
-}
+						<tr>
+							<td>2</td>
+							<td><a href="#">John</a></td>
+							<td>john@marlindev.ru</td>
+							<td>12/03/2025</td>
+						</tr>
+
+						<tr>
+							<td>3</td>
+							<td><a href="#">Jane</a></td>
+							<td>jane@marlindev.ru</td>
+							<td>12/03/2025</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
