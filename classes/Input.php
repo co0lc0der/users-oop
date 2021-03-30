@@ -1,6 +1,7 @@
 <?php
 
-class Input {
+class Input
+{
 	public static function exists($type = 'post') {
 		switch ($type) {
 			case 'post':
@@ -9,7 +10,7 @@ class Input {
 				return (!empty($_GET)) ? true : false;
 			default:
 				return false;
-			break;  
+			break;
 		}
 	}
 
@@ -21,16 +22,5 @@ class Input {
 		}
 
 		return '';
-	}
-
-	public static function set($params = [], $type = 'text') {
-		$attrs = " {$type}";
-		if ($params) {
-			foreach($params as $attr => $value) {
-				$attrs .= " {$attr}='{$value}'";
-			}
-		}
-
-		return "<input{$attrs}>";
 	}
 }

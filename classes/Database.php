@@ -1,10 +1,16 @@
 <?php
 
-class Database {
+class Database
+{
 	private static $instance = null;
 	private $pdo, $query, $error = false, $results, $count;
 
 	private function __construct() {
+		// try {
+		//     $this->pdo = new PDO("mysql:host=" . Config::get('mysql.host') . ";dbname=" . Config::get('mysql.database'), Config::get('mysql.username'), Config::get('mysql.password'));
+		// } catch (PDOException $exception) {
+		//     die($exception->getMessage());
+		// }
 		try {
 			if (Config::get('dbdriver') == 'sqlite') {
 				$this->pdo = new PDO("sqlite:" . Config::get('sqlite.database'), '', '', [
@@ -31,42 +37,47 @@ class Database {
 		return self::$instance;
 	}
 
-	public function query($sql, $params = [])	{
-	  $this->error = false;
-	  $this->query = $this->pdo->prepare($sql);
+	public function query($sql, $params = []) {
+		$this->error = false;
+		$this->query = $this->pdo->prepare($sql);
 
-	  if(count($params)) {
-		  $i = 1;
-		  foreach($params as $param) {
+		if(count($params)) {
+			$i = 1;
+			foreach($params as $param) {
 				$this->query->bindValue($i, $param);
 				$i++;
-		  }
-	  }
+			}
+		}
 
-	  if(!$this->query->execute()) {
-		  $this->error = true;
-	  } else {
-		  $this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
-		  $this->count = $this->query->rowCount();
-	  }
+		if(!$this->query->execute()) {
+			$this->error = true;
+		} else {
+			$this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
+			$this->count = count($this->results);
+		}
 
-	  return $this;
+		return $this;
 	}
 
-	public function error() {
+	public function error()	{
 		return $this->error;
 	}
 
-	public function results() {
+	public function results()	{
+		//var_dump($this->results);
 		return $this->results;
 	}
 
-	public function count() {
+	public function count()	{
 		return $this->count;
 	}
 
 	public function get($table, $where = []) {
 		return $this->action('SELECT *', $table, $where);
+	}
+
+	public function getAll($table) {
+		return $this->action('SELECT *', $table, ['1']);
 	}
 
 	public function getFields($fields, $table, $where = []) {
@@ -93,9 +104,17 @@ class Database {
 			if(in_array($operator, $operators)) {
 
 				$sql = "{$action} FROM `{$table}` WHERE `{$field}` {$operator} ?";
+				//var_dump('3 - ' . $sql);
 				if(!$this->query($sql, [$value])->error()) { //true если есть ошибка
+
 					return $this;
 				}
+			}
+		} else if (count($where) === 1) {
+			$sql = "{$action} FROM `{$table}` WHERE {$where[0]}";
+			//var_dump('1 - '.$sql);
+			if(!$this->query($sql)->error()) { //true если есть ошибка
+				return $this;
 			}
 		}
 
@@ -111,10 +130,9 @@ class Database {
 
 		$sql = "INSERT INTO `{$table}` (" . '`' . implode('`, `', array_keys($fields)) . '`' . ") VALUES ({$val})";
 
-		if(!$this->query($sql, $fields)->error()) {
-			return true;
-		}
-		return false;
+		if($this->query($sql, $fields)->error()) return false;
+
+		return true;
 	}
 
 	public function update($table, $id, $fields = []) {
@@ -122,15 +140,14 @@ class Database {
 		foreach($fields as $key => $field) {
 			$set .= "`{$key}` = ?,"; // username = ?, password = ?,
 		}
+
 		$set = rtrim($set, ','); // username = ?, password = ?
 
 		$sql = "UPDATE `{$table}` SET {$set} WHERE `id` = {$id}";
 
-		if(!$this->query($sql, $fields)->error()){
-			return true;
-		}
+		if($this->query($sql, $fields)->error()) return false;
 
-		return false;
+		return true;
 	}
 
 	public function first() {

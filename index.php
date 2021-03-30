@@ -1,60 +1,55 @@
 <?php
 require_once 'init.php';
 
-include "header.php";
+require 'header.php';
 ?>
-
 	<div class="container">
-		<div class="row">
+		<div class="row mt-5">
 			<div class="col-md-12">
 				<div class="jumbotron">
-					<h1 class="display-4">Привет, мир!</h1>
+					<h1 class="display-4">Привет<?= $user->isLoggedIn() ? ', ' . $user->data()->username : '' ?>!</h1>
 					<p class="lead">Это дипломный проект по разработке на PHP. На этой странице список наших пользователей.</p>
-					<hr class="my-4">
-					<p>Чтобы стать частью нашего проекта вы можете пройти регистрацию.</p>
-					<a class="btn btn-primary btn-lg" href="register.php" role="button">Зарегистрироваться</a>
+					<?php if (!$user->isLoggedIn()): ?>
+						<hr class="my-4">
+						<p>Чтобы стать частью нашего проекта вы можете пройти регистрацию.</p>
+						<a class="btn btn-primary btn-lg" href="register.php" role="button">Зарегистрироваться</a>
+					<?php endif; ?>
 				</div>
 			</div>
 		</div>
 
-		<div class="row">
-			<div class="col-md-12">
-				<h1>Пользователи</h1>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Имя</th>
-							<th>Email</th>
-							<th>Дата</th>
-						</tr>
-					</thead>
+		<?php
+			if ($users = Database::getInstance()->getAll('users')->results()):
+		?>
+			<div class="row">
+				<div class="col-md-12">
+					<h1>Пользователи</h1>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>Имя</th>
+								<th>Email</th>
+								<th>Дата</th>
+							</tr>
+						</thead>
 
-					<tbody>
-						<tr>
-							<td>1</td>
-							<td><a href="#">Rahim</a></td>
-							<td>rahim@marlindev.ru</td>
-							<td>12/03/2025</td>
-						</tr>
-
-						<tr>
-							<td>2</td>
-							<td><a href="#">John</a></td>
-							<td>john@marlindev.ru</td>
-							<td>12/03/2025</td>
-						</tr>
-
-						<tr>
-							<td>3</td>
-							<td><a href="#">Jane</a></td>
-							<td>jane@marlindev.ru</td>
-							<td>12/03/2025</td>
-						</tr>
-					</tbody>
-				</table>
+						<tbody>
+							<?php foreach($users as $user): ?>
+								<tr>
+									<td><?=$user->id?></td>
+									<td><a href="user_profile.php?id=<?=$user->id?>"><?=$user->username?></a></td>
+									<td><a href="mailto:<?=$user->email?>"><?=$user->email?></a></td>
+									<td><?=date('d.m.Y', strtotime($user->reg_date))?></td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
+		<?php else: ?>
+			<h2>Пользователей не найдено. <a href="register.php">Станьте первым!</a></h2>
+		<?php endif; ?>
 	</div>
 </body>
 </html>

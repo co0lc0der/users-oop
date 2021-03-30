@@ -1,6 +1,7 @@
 <?php
 
-class Validate {
+class Validate
+{
 	private $passed = false, $errors = [], $db = null;
 
 	public function __construct() {

@@ -1,6 +1,6 @@
 <?php
 require_once 'init.php';
-
+$page_title = 'Авторизация';
 
 if(Input::exists()) {
 	if(Token::check(Input::get('token'))) {
@@ -23,7 +23,7 @@ if(Input::exists()) {
 			$login = $user->login(Input::get('email'), Input::get('password'), $remember);
 
 			if($login) {
-				Redirect::to('index.php');
+				Redirect::to();
 			} else {
 				Session::setFlash('Неправильный логин или пароль');
 			}
@@ -43,7 +43,7 @@ if(Input::exists()) {
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Авторизация</title>
+	<title><?=isset($page_title) ? $page_title : Config::get('site.name')?></title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 	<!-- Bootstrap core CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -55,9 +55,12 @@ if(Input::exists()) {
 	<?php
 	//var_dump($_SESSION);
 	?>
-	<form class="form-signin" method="post">
-		<img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72">
-		<h1 class="h3 mb-3 font-weight-normal">Авторизация</h1>
+	<?php Form::begin([
+		'method' => 'post',
+		'class' => "form-signin",
+	]);?>
+		<a href="index.php"><img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72"></a>
+		<h1 class="h3 mb-3 font-weight-normal"><?=isset($page_title) ? $page_title : Config::get('site.name')?></h1>
 
 		<?php if (Session::exists('danger')): ?>
 			<div class="alert alert-danger">
@@ -70,21 +73,38 @@ if(Input::exists()) {
 		</div> -->
 
 		<div class="form-group">
-			<input type="email" class="form-control" id="email" placeholder="Email" name="email" value="<?php echo Input::get('email')?>">
+			<?php Form::input('email', [
+				'class' => 'form-control',
+				'type' => 'email',
+				'placeholder' => 'Email',
+				'value' => Input::get('email'),
+			]); ?>
 		</div>
+
 		<div class="form-group">
-			<input type="password" class="form-control" id="password" placeholder="Пароль" name="password">
+			<?php Form::input('password', [
+				'class' => 'form-control',
+				'type' => 'password',
+				'placeholder' => 'Пароль',
+			]); ?>
 		</div>
 
 		<div class="checkbox mb-3">
-			<label>
-				<input type="checkbox" name="remember"> Запомнить меня
-			</label>
+			<?php Form::input('remember', [
+				'label' => 'Запомнить меня',
+				'label_after' => true,
+				'type' => 'checkbox',
+			]); ?>
 		</div>
-		<input type="hidden" name="token" value="<?php echo Token::generate();?>">
 
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+		<?php Form::input('token'); ?>
+
+		<?php Form::button([
+			'class' => 'btn btn-lg btn-primary btn-block',
+			'type' => 'submit',
+		], 'Войти'); ?>
+
 		<p class="mt-5 mb-3 text-muted">&copy; 2017-<?=date('Y')?></p>
-	</form>
+	<?php Form::end();?>
 </body>
 </html>

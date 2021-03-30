@@ -1,6 +1,7 @@
 <?php
 
-class User {
+class User
+{
 	private $db, $data, $sessionName, $isLoggedIn, $cookieName;
 
 	public function __construct($user = null) {
@@ -43,11 +44,17 @@ class User {
 					if($remember) {
 						$hash = hash('sha256', uniqid());
 
-						$hashCheck = $this->db->get('users', ['id', '=', $this->data()->id]);
+						//$hashCheck = $this->db->get('users', ['id', '=', $this->data()->id]);
+						$hashCheck = $this->db->get('user_sessions', ['user_id', '=', $this->data()->id]);
 
-						if(!$hashCheck->first()->hash) {
+						/*if(!$hashCheck->first()->hash) {
 							//$this->db->update('users', $this->data()->id, ['hash' => $hash]);
-							$this->update(['hash' => $hash], $this->data()->id);
+							$this->update(['hash' => $hash], $this->data()->id);*/
+						if(!$hashCheck->count()) {
+							$this->db->insert('user_sessions', [
+								'user_id' => $this->data()->id,
+								'hash' => $hash
+							]);
 						} else {
 							$hash = $hashCheck->first()->hash;
 						}
@@ -86,7 +93,9 @@ class User {
 	}
 
 	public function logout() {
-		$this->update(['hash' => ''], $this->data()->id);
+		//$this->db->update('users', $this->data()->id, ['hash' => '']);
+		//$this->update(['hash' => ''], $this->data()->id);
+		$this->db->delete('user_sessions', ['user_id', '=', $this->data()->id]);
 		Session::delete($this->sessionName);
 		Cookie::delete($this->cookieName);
 	}
@@ -110,7 +119,7 @@ class User {
 			if($group->count()) {
 				$permissions = $group->first()->permissions;
 				$permissions = json_decode($permissions, true);
-
+				
 				if($permissions[$key]) {
 					return true;
 				}

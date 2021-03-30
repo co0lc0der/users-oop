@@ -1,11 +1,6 @@
 <?php
 require_once 'init.php';
 
-//echo Input::set(['name' => 'login']);
-
-//exit;
-
-
 //echo Session::get(Config::get('session.user_session'));
 echo Session::flash('success');
 $user = new User;

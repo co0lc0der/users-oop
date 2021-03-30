@@ -1,82 +1,145 @@
 <?php
 require_once 'init.php';
-
-if(Input::exists()) {
-    if(Token::check(Input::get('token'))) {
-        $validate = new Validate();
-
-        $validation = $validate->check($_POST, [
-            'username'  =>  [
-                'required'  =>  true,
-                'min'   =>  2,
-                'max'   =>  15,
-            ],
-            'email' =>  [
-                'required'  =>  true,
-                'email' =>  true,
-                'unique'    =>  'users'
-            ],
-            'password' => [
-                'required'  =>  true,
-                'min'   =>  3
-            ],
-            'password_again' => [
-                'required'  =>  true,
-                'matches'   => 'password'
-            ]
-        ]);
-
-
-        if($validation->passed()) {
-
-            //Database
-            $user = new User;
-
-            $user->create([
-                'username'   => Input::get('username'),
-                'password'   =>  password_hash(Input::get('password'), PASSWORD_DEFAULT),
-                'email' =>  Input::get('email')
-            ]);
-
-
-            Session::flash('success', 'register success');
-//            header('Location: /test.php');
-
-        } else {
-            foreach($validation->errors() as $error) {
-                echo $error . "<br>";
-            }
-        }
-    }
-}
-
-
+$page_title = 'Регистрация';
 ?>
+<!doctype html>
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title><?=isset($page_title) ? $page_title : Config::get('site.name')?></title>
 
-<form action="" method="post">
-    <?php echo Session::flash('success'); ?>
-    <div class="field">
-        <label for="username">Username</label>
-        <input type="text" name="username" value="<?php echo Input::get('username')?>">
-    </div>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+	<!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Custom styles for this template -->
+	<link href="css/style.css" rel="stylesheet">
+</head>
+<body class="text-center">
+	<?php Form::begin([
+		'method' => 'post',
+		'class' => "form-signin",
+	]);?>
+		<a href="index.php"><img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72"></a>
+		<h1 class="h3 mb-3 font-weight-normal"><?=isset($page_title) ? $page_title : Config::get('site.name')?></h1>
 
-    <div class="field">
-        <label for="email">Email</label>
-        <input type="text" name="email" value="<?php echo Input::get('email')?>">
-    </div>
+		<?php
+			if (Input::exists()) {
+				if (Token::check(Input::get('token'))) {
+					$validate = new Validate();
+			
+					$validation = $validate->check($_POST, [
+						'username'  =>  [
+							'required'  =>  true,
+							'min'   =>  2,
+							'max'   =>  15,
+						],
+						'email' =>  [
+							'required'  =>  true,
+							'email' =>  true,
+							'unique'    =>  'users'
+						],
+						'password' => [
+							'required'  =>  true,
+							'min'   =>  3
+						],
+						'password_again' => [
+							'required'  =>  true,
+							'matches'   => 'password'
+						],
+						'agree' => [
+							'required'  =>  true,
+						]
+					]);
+			
+					if($validation->passed()) {
+						$user = new User;
+			
+						$created = $user->create([
+							'username'   => Input::get('username'),
+							'password'   =>  password_hash(Input::get('password'), PASSWORD_DEFAULT),
+							'email' =>  Input::get('email'),
+							'reg_date' => date('Y-m-d', time()),
+							'group_id' => 1
+						]);
+			
+						if ($created) {
+							Session::setFlash('success', 'Регистрация прошла успешно');
+							Redirect::to();
+						}
+					} else {
+						echo '<div class="alert alert-danger">';
+						foreach($validation->errors() as $error) {
+							echo $error . '<br>';
+							//Session::setFlash('danger', $error);
+						}
+						echo '</div>';
+					}
+				}
+			}
 
-    <div class="field">
-        <label for="">Password</label>
-        <input type="text" name="password" >
-    </div>
+			if ($flash = Session::getFlash('danger')) {
+				echo '<div class="alert alert-danger">' . $flash . '</div>';
+			}
 
-    <div class="field">
-        <label for="">Password Again</label>
-        <input type="text" name="password_again">
-    </div>
+			if ($flash = Session::getFlash('success')) {
+				echo '<div class="alert alert-success">' . $flash . '</div>';
+			}
 
-    <input type="hidden" name="token" value="<?php echo Token::generate();?>">
-    <div class="field">
-        <button type="submit">Submit</button>
-    </div>
-</form>
+			if ($flash = Session::getFlash('info')) {
+				echo '<div class="alert alert-info">' . $flash . '</div>';
+			}
+		?>
+
+		<div class="form-group">
+			<?php Form::input('email', [
+				'class' => 'form-control',
+				'type' => 'email',
+				'placeholder' => 'Email',
+				'value' => Input::get('email'),
+			]); ?>
+		</div>
+
+		<div class="form-group">
+			<?php Form::input('username', [
+				'class' => 'form-control',
+				'placeholder' => 'Ваше имя',
+				'value' => Input::get('username'),
+			]); ?>
+		</div>
+
+		<div class="form-group">
+			<?php Form::input('password', [
+				'class' => 'form-control',
+				'type' => 'password',
+				'placeholder' => 'Пароль',
+			]); ?>
+		</div>
+
+		<div class="form-group">
+			<?php Form::input('password_again', [
+				'class' => 'form-control',
+				'type' => 'password',
+				'placeholder' => 'Повторите пароль',
+			]); ?>
+		</div>
+
+		<div class="checkbox mb-3">
+			<?php Form::input('agree', [
+				'label' => 'Согласен со всеми правилами',
+				'label_after' => true,
+				'type' => 'checkbox',
+			]); ?>
+		</div>
+
+		<?php Form::input('token'); ?>
+
+		<?php Form::button([
+			'class' => 'btn btn-lg btn-primary btn-block',
+			'type' => 'submit',
+		], 'Зарегистрироваться'); ?>
+
+		<p class="mt-5 mb-3 text-muted">&copy; 2017-<?=date('Y')?></p>
+	<?php Form::end();?>
+</body>
+</html>
