@@ -21,6 +21,7 @@ if (Input::exists()) {
         'username' => Input::get('username'),
         'status' => Input::get('status'),
       ]);
+
       Session::setFlash('Профиль обновлен', 'success');
       Redirect::to('profile.php');
     } else {
