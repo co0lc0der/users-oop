@@ -62,15 +62,19 @@ if(Input::exists()) {
 		<a href="index.php"><img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72"></a>
 		<h1 class="h3 mb-3 font-weight-normal"><?=isset($page_title) ? $page_title : Config::get('site.name')?></h1>
 
-		<?php if (Session::exists('danger')): ?>
-			<div class="alert alert-danger">
-				<?=Session::getFlash('danger');?>
-			</div>
-		<?php endif; ?>
+		<?php
+			if (Session::exists('success')) {
+				echo '<div class="alert alert-success">' . Session::getFlash('success') . '</div>';
+			} 
+			
+			if (Session::exists('danger')) {
+				echo '<div class="alert alert-danger">' . Session::getFlash('danger') . '</div>';
+			} 
 
-		<!-- <div class="alert alert-info">
-			Логин или пароль неверны
-		</div> -->
+			if (Session::exists('info')) {
+				echo '<div class="alert alert-info">' . Session::getFlash('info') . '</div>';
+			}
+		?>
 
 		<div class="form-group">
 			<?php Form::input('email', [

@@ -64,7 +64,7 @@ $page_title = 'Регистрация';
 						]);
 			
 						if ($created) {
-							Session::setFlash('success', 'Регистрация прошла успешно');
+							Session::setFlash('Регистрация прошла успешно', 'success');
 							Redirect::to();
 						}
 					} else {

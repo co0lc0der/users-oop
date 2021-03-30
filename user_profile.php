@@ -1,5 +1,6 @@
 <?php
 require_once 'init.php';
+$page_title = 'Данные пользователя';
 require 'header.php';
 
 $user = new User(Input::get('id'));
@@ -8,7 +9,7 @@ if (!$user->data()) Redirect::to();
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <h1>Данные пользователя</h1>
+        <h1><?=isset($page_title) ? $page_title : Config::get('site.name')?></h1>
         <table class="table">
           <thead>
             <th>ID</th>

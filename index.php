@@ -19,6 +19,18 @@ require 'header.php';
 		</div>
 
 		<?php
+			if (Session::exists('success')) {
+				echo '<div class="alert alert-success">' . Session::getFlash('success') . '</div>';
+			} 
+			
+			if (Session::exists('danger')) {
+				echo '<div class="alert alert-danger">' . Session::getFlash('danger') . '</div>';
+			} 
+
+			if (Session::exists('info')) {
+				echo '<div class="alert alert-info">' . Session::getFlash('info') . '</div>';
+			} 
+
 			if ($users = Database::getInstance()->getAll('users')->results()):
 		?>
 			<div class="row">

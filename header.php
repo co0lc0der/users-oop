@@ -16,7 +16,7 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-		<a class="navbar-brand" href="index.php"><?=isset($page_title) ? $page_title : Config::get('site.name')?></a>
+		<a class="navbar-brand" href="index.php"><?=Config::get('site.name')?></a>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
@@ -36,7 +36,7 @@
 			<ul class="navbar-nav">
 				<?php if ($user->isLoggedIn()) { ?>
 					<li class="nav-item">
-						<a href="profile.html" class="nav-link">Профиль</a>
+						<a href="profile.php" class="nav-link">Профиль</a>
 					</li>
 					<li class="nav-item">
 						<a href="logout.php" class="nav-link">Выйти</a>
