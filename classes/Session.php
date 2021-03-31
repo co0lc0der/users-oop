@@ -36,4 +36,8 @@ class Session
 			return $session;
 		}
 	}
+
+	public static function destroy() {
+		session_destroy();
+	}
 }

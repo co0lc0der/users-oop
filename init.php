@@ -11,7 +11,7 @@ $GLOBALS['config'] = [
 
 	'site' => [
 		//'host'  =>  $_SERVER['HTTP_HOST'],
-		//'baseurl' => $_SERVER['HTTP_HOST'] . '',
+		'baseurl' => 'http://' . $_SERVER['HTTP_HOST'] . '',
 		'name' => 'User Management',
 	],
 
@@ -25,7 +25,7 @@ $GLOBALS['config'] = [
 	],
 
 	'sqlite' => [
-		'database'  =>  './users.sqlite3',
+		'database'  =>  __DIR__ . '/users.sqlite3',
 	],
 
 	'session'  =>  [
@@ -47,7 +47,7 @@ if(Cookie::exists(Config::get('cookie.cookie_name')) && !Session::exists(Config:
 	if($hashCheck->count()) {
 		$user = new User($hashCheck->first()->user_id);
 		$user->login();
-		Redirect::to('index.php');
+		Redirect::to();
 	}
 	// if($hashCheck->first()->hash) {
 	// 	$user = new User($hashCheck->first()->id);

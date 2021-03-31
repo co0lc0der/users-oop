@@ -93,6 +93,7 @@ class Database
 	}
 
 	public function action($action, $table, $where = []) {
+		//var_dump($action);die;
 		if(count($where) === 3) {
 
 			$operators = ['=', '>', '<', '>=', '<='];

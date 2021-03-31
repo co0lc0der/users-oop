@@ -12,7 +12,7 @@ require 'header.php';
 					<?php if (!$user->isLoggedIn()): ?>
 						<hr class="my-4">
 						<p>Чтобы стать частью нашего проекта вы можете пройти регистрацию.</p>
-						<a class="btn btn-primary btn-lg" href="register.php" role="button">Зарегистрироваться</a>
+						<a class="btn btn-primary btn-lg" href="<?=Config::get('site.baseurl')?>/register.php" role="button">Зарегистрироваться</a>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -50,7 +50,7 @@ require 'header.php';
 							<?php foreach($users as $user): ?>
 								<tr>
 									<td><?=$user->id?></td>
-									<td><a href="user_profile.php?id=<?=$user->id?>"><?=$user->username?></a></td>
+									<td><a href="<?=Config::get('site.baseurl')?>/user_profile.php?id=<?=$user->id?>"><?=$user->username?></a></td>
 									<td><a href="mailto:<?=$user->email?>"><?=$user->email?></a></td>
 									<td><?=date('d.m.Y', strtotime($user->reg_date))?></td>
 								</tr>
@@ -60,7 +60,7 @@ require 'header.php';
 				</div>
 			</div>
 		<?php else: ?>
-			<h2>Пользователей не найдено. <a href="register.php">Станьте первым!</a></h2>
+			<h2>Пользователей не найдено. <a href="<?=Config::get('site.baseurl')?>/register.php">Станьте первым!</a></h2>
 		<?php endif; ?>
 	</div>
 </body>

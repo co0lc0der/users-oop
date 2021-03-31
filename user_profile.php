@@ -4,7 +4,7 @@ $page_title = 'Данные пользователя';
 require 'header.php';
 
 $user = new User(Input::get('id'));
-if (!$user->data()) Redirect::to();
+if (!$user->exists()) Redirect::to();
 ?>
   <div class="container">
     <div class="row">

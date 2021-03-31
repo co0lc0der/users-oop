@@ -96,7 +96,8 @@ class User
 		//$this->db->update('users', $this->data()->id, ['hash' => '']);
 		//$this->update(['hash' => ''], $this->data()->id);
 		$this->db->delete('user_sessions', ['user_id', '=', $this->data()->id]);
-		Session::delete($this->sessionName);
+		//Session::delete($this->sessionName);
+		Session::destroy();
 		Cookie::delete($this->cookieName);
 	}
 
@@ -112,6 +113,7 @@ class User
 		$this->db->update('users', $id, $fields);
 	}
 
+	// проверят наличие прав с подключением к БД
 	public function hasPermissions($key = null) {
 		if($key) {
 			$group = $this->db->get('groups', ['id', '=', $this->data()->group_id]);
@@ -124,6 +126,17 @@ class User
 					return true;
 				}
 			}
+		}
+
+		return false;
+	}
+
+	// проверяет наличие прав по переданному JSON из БД
+	public static function checkPermissions($json, $key = null) {
+		if($json && $key) {
+			$permissions = json_decode($json, true);
+
+			if($permissions[$key]) return true;
 		}
 
 		return false;

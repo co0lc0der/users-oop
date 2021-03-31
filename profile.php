@@ -2,7 +2,7 @@
 require_once 'init.php';
 
 $user = new User();
-if (!$user->data()) Redirect::to();
+if (!$user->exists()) Redirect::to();
 
 $page_title = 'Профиль пользователя - ' . $user->data()->username;
 
@@ -81,7 +81,7 @@ require 'header.php';
               'type' => 'submit',
             ], 'Обновить профиль'); ?>
 
-            <a href="changepassword.php" class="ml-3 btn btn-secondary">Изменить пароль</a>
+            <a href="<?=Config::get('site.baseurl')?>/changepassword.php" class="ml-3 btn btn-secondary">Изменить пароль</a>
           </div>
         <?php Form::end();?>
       </div>

@@ -59,7 +59,7 @@ if(Input::exists()) {
 		'method' => 'post',
 		'class' => "form-signin",
 	]);?>
-		<a href="index.php"><img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72"></a>
+		<a href="<?=Config::get('site.baseurl')?>"><img class="mb-4" src="images/apple-touch-icon.png" alt="" width="72" height="72"></a>
 		<h1 class="h3 mb-3 font-weight-normal"><?=isset($page_title) ? $page_title : Config::get('site.name')?></h1>
 
 		<?php
