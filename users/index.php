@@ -11,8 +11,6 @@ require '../header.php';
       <?php 
         //select u.id, u.email, u.username, g.name from `users` as `u`, `groups` as `g` where u.group_id = g.id
         //select u.id, u.email, u.username, g.permissions from `users` as `u` inner join `groups` as `g` on u.group_id = g.id
-        //$users = Database::getInstance()->getAll('users')->results();
-        //getFields($fields, $table, $where = [])
         $users = Database::getInstance()->query('SELECT u.id, u.email, u.username, g.permissions FROM `users` AS `u` INNER JOIN `groups` AS `g` ON u.group_id = g.id')->results();
       
         if (Session::exists('success')) {

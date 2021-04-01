@@ -1,9 +1,13 @@
 <?php
 require_once 'init.php';
+
+$user = new User();
+if ($user->isLoggedIn()) Redirect::to();
+
 $page_title = 'Авторизация';
 
-if(Input::exists()) {
-	if(Token::check(Input::get('token'))) {
+if (Input::exists()) {
+	if (Token::check(Input::get('token'))) {
 		$validate = new Validate();
 
 		$validate->check($_POST, [
@@ -16,13 +20,13 @@ if(Input::exists()) {
 			]
 		]);
 		
-		if($validate->passed()) {
+		if ($validate->passed()) {
 			$user = new User;
 			$remember = (Input::get('remember')) === 'on' ? true : false;
 
 			$login = $user->login(Input::get('email'), Input::get('password'), $remember);
 
-			if($login) {
+			if ($login) {
 				Redirect::to();
 			} else {
 				Session::setFlash('Неправильный логин или пароль');

@@ -39,19 +39,13 @@ $GLOBALS['config'] = [
 	]
 ];
 
-if(Cookie::exists(Config::get('cookie.cookie_name')) && !Session::exists(Config::get('session.user_session'))) {
+if (Cookie::exists(Config::get('cookie.cookie_name')) && !Session::exists(Config::get('session.user_session'))) {
 	$hash = Cookie::get(Config::get('cookie.cookie_name'));
 	$hashCheck = Database::getInstance()->get('user_sessions', ['hash', '=', $hash]);
-	//$hashCheck = Database::getInstance()->get('users', ['hash', '=', $hash]);
 
-	if($hashCheck->count()) {
+	if ($hashCheck->count()) {
 		$user = new User($hashCheck->first()->user_id);
 		$user->login();
 		Redirect::to();
 	}
-	// if($hashCheck->first()->hash) {
-	// 	$user = new User($hashCheck->first()->id);
-	// 	$user->login();
-	// 	Redirect::to('index.php');
-	// }
 }

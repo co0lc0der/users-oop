@@ -1,6 +1,5 @@
 <?php
-	$user = new User;
-	//var_dump($user);
+	$user = new User();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
