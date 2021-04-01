@@ -9,11 +9,11 @@ class User
 		$this->sessionName = Config::get('session.user_session');
 		$this->cookieName = Config::get('cookie.cookie_name');
 
-		if(!$user) {
-			if(Session::exists($this->sessionName)) {
+		if (!$user) {
+			if (Session::exists($this->sessionName)) {
 				$user = Session::get($this->sessionName); //id
 
-				if($this->find($user)) {
+				if ($this->find($user)) {
 					$this->isLoggedIn = true;
 				}
 			}
@@ -33,15 +33,15 @@ class User
 	 * @return bool
 	 */
 	public function login(string $email = null, string $password = null, bool $remember = false) {
-		if(!$email && !$password && $this->exists()) {
+		if (!$email && !$password && $this->exists()) {
 			Session::put($this->sessionName, $this->data()->id);
 		} else {
 			$user = $this->find($email);
-			if($user) {
-				if(password_verify($password, $this->data()->password)) {
+			if ($user) {
+				if (password_verify($password, $this->data()->password)) {
 					Session::put($this->sessionName, $this->data()->id);
 
-					if($remember) {
+					if ($remember) {
 						$hash = hash('sha256', uniqid());
 
 						//$hashCheck = $this->db->get('users', ['id', '=', $this->data()->id]);
@@ -50,7 +50,7 @@ class User
 						/*if(!$hashCheck->first()->hash) {
 							//$this->db->update('users', $this->data()->id, ['hash' => $hash]);
 							$this->update(['hash' => $hash], $this->data()->id);*/
-						if(!$hashCheck->count()) {
+						if (!$hashCheck->count()) {
 							$this->db->insert('user_sessions', [
 								'user_id' => $this->data()->id,
 								'hash' => $hash
@@ -71,15 +71,13 @@ class User
 	}
 
 	public function find($value = null) {
-		if(is_numeric($value)) {
+		if (is_numeric($value)) {
 			$this->data = $this->db->get('users', ['id', '=', $value])->first();
 		} else {
 			$this->data = $this->db->get('users', ['email', '=', $value])->first();
 		}
 
-		if($this->data) {
-			return true;
-		}
+		if ($this->data) return true;
 
 		return false;
 	}
@@ -106,26 +104,25 @@ class User
 	}
 
 	public function update($fields = [], $id = null) {
-		if(!$id && $this->isLoggedIn()) {
+		if (!$id && $this->isLoggedIn()) {
 			$id = $this->data()->id;
 		}
 
 		$this->db->update('users', $id, $fields);
 	}
 
+	public function remove($id = null) {
+		// if(!$id && $this->isLoggedIn()) {
+		// 	$id = $this->data()->id;
+		// }
+		$this->db->delete('users', ['id', '=', $this->data()->id]);
+	}
+
 	// проверят наличие прав с подключением к БД
 	public function hasPermissions($key = null) {
-		if($key) {
+		if ($key) {
 			$group = $this->db->get('groups', ['id', '=', $this->data()->group_id]);
-
-			if($group->count()) {
-				$permissions = $group->first()->permissions;
-				$permissions = json_decode($permissions, true);
-				
-				if($permissions[$key]) {
-					return true;
-				}
-			}
+			return $group->count() ? $this->checkPermissions($group->first()->permissions, $key) : false;
 		}
 
 		return false;
@@ -133,10 +130,9 @@ class User
 
 	// проверяет наличие прав по переданному JSON из БД
 	public static function checkPermissions($json, $key = null) {
-		if($json && $key) {
+		if ($json && $key) {
 			$permissions = json_decode($json, true);
-
-			if($permissions[$key]) return true;
+			if ($permissions[$key]) return true;
 		}
 
 		return false;
